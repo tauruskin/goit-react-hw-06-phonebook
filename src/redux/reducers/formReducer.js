@@ -1,4 +1,4 @@
-import { INPUT_CHANGE, INPUT_RESET } from '../constants/formConstant';
+import { INPUT_CHANGE, INPUT_RESET } from '../constants/formConstants';
 
 const initialState = '';
 

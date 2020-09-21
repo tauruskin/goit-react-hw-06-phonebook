@@ -8,7 +8,7 @@ const store = configureStore({
 
 export default store;
 
-//++++++++++++++++++++++++++++++++++++++++++++++++
+// -----------------------------------
 
 // import { createStore } from "redux";
 // import { combineReducers } from "redux";

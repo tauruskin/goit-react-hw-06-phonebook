@@ -8,7 +8,7 @@ import './ContactList.css';
 const ContactList = ({ contacts }) => {
   return (
     <TransitionGroup component="ul" className="contact_List">
-      {contacts.map(id => (
+      {contacts.map(({ id }) => (
         <CSSTransition key={id} classNames="list_item" timeout={250}>
           <SingleContact id={id} />
         </CSSTransition>
