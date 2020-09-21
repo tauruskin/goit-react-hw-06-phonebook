@@ -1,29 +1,41 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import SingleContact from '../singleContact/SingleContact';
 import './ContactList.css';
 
-const ContactList = ({ filteredContacts, deleteContact }) => {
+const ContactList = ({ contacts }) => {
   return (
     <TransitionGroup component="ul" className="contact_List">
-      {filteredContacts.map((contact, id) => (
+      {contacts.map(id => (
         <CSSTransition key={id} classNames="list_item" timeout={250}>
-          <SingleContact contact={contact} deleteContact={deleteContact} />
+          <SingleContact id={id} />
         </CSSTransition>
       ))}
     </TransitionGroup>
   );
 };
+const mapStateToProps = state => {
+  const { items, filter } = state.contacts;
+  const normalizedFilter = filter.toLowerCase();
 
-export default ContactList;
+  const getFilteredContact = items.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter),
+  );
+  return {
+    contacts: getFilteredContact,
+  };
+};
+
+export default connect(mapStateToProps)(ContactList);
+
 ContactList.propTypes = {
-  filteredContacts: PropTypes.arrayOf(
+  contacts: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       id: PropTypes.string,
-      namber: PropTypes.string,
+      number: PropTypes.string,
     }),
   ).isRequired,
-  deleteContact: PropTypes.func.isRequired,
 };

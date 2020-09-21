@@ -1,9 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { handleFilter } from '../../redux/actions/contactAction';
 import './Filter.css';
 
-const Filter = ({ state, handleFilter }) => {
-  const { filter } = state;
+const Filter = ({ filter, handleFilter }) => {
   return (
     <div className="filter_box">
       <label className="input_label">
@@ -21,18 +22,25 @@ const Filter = ({ state, handleFilter }) => {
     </div>
   );
 };
-export default Filter;
+
+const mapStateToProps = state => ({
+  filter: state.contacts.filter,
+});
+
+const mapDispatchToProps = {
+  handleFilter,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Filter);
 
 Filter.propTypes = {
-  state: PropTypes.shape({
-    contacts: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        id: PropTypes.string,
-        namber: PropTypes.string,
-      }),
-    ),
-    filter: PropTypes.string,
-  }).isRequired,
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      id: PropTypes.string,
+      number: PropTypes.string,
+    }).isRequired,
+  ),
+  filter: PropTypes.string.isRequired,
   handleFilter: PropTypes.func.isRequired,
 };

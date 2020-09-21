@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
-import { v4 as uuidv4 } from 'uuid';
+import { addContact } from '../../redux/actions/contactAction';
 import './PhoneForm.css';
 
 class PhoneForm extends Component {
@@ -13,6 +14,7 @@ class PhoneForm extends Component {
     ...this.formInitialState,
     alert: false,
   };
+
   inputHandler = ({ target }) => {
     const { value, name } = target;
 
@@ -20,11 +22,12 @@ class PhoneForm extends Component {
       [name]: value,
     });
   };
+
   submitHandler = e => {
     const { name, number, alert } = this.state;
     e.preventDefault();
 
-    const { contacts } = this.props.state;
+    const { contacts } = this.props;
     const isExists = contacts.find(contact => contact.name === name);
 
     if (isExists) {
@@ -32,21 +35,18 @@ class PhoneForm extends Component {
       return this.reset();
     }
 
-    const singleContact = {
-      name,
-      number,
-      id: uuidv4(),
-    };
-
-    this.props.addContact(singleContact);
+    this.props.addContact(name, number);
     this.reset();
   };
+
   reset = () => {
     this.setState({ ...this.formInitialState });
   };
+
   toggleAlert = status => {
     this.setState({ alert: !status });
   };
+
   render() {
     const { name, number, alert } = this.state;
     const alertDelay = () => this.setState({ alert: !alert });
@@ -101,18 +101,25 @@ class PhoneForm extends Component {
   }
 }
 
-export default PhoneForm;
+const mapStateToProps = state => ({
+  contacts: state.contacts.items,
+  filter: state.contacts.filter,
+});
+
+const mapDispatchToProps = {
+  addContact,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PhoneForm);
 
 PhoneForm.propTypes = {
-  state: PropTypes.shape({
-    contacts: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        id: PropTypes.string,
-        namber: PropTypes.string,
-      }),
-    ),
-    filter: PropTypes.string,
-  }).isRequired,
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      id: PropTypes.string,
+      number: PropTypes.string,
+    }),
+  ).isRequired,
+  filter: PropTypes.string.isRequired,
   addContact: PropTypes.func.isRequired,
 };
